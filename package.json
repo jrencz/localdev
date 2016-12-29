@@ -1,0 +1,24 @@
+{
+  "name": "localdev",
+  "version": "0.0.1",
+  "description": "Set of tools for facilitating local development of npm-installed project dependencies",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "localdev-link": "./bin/link.js",
+    "localdev-start": "./bin/start.js"
+  },
+  "author": "Jarek Rencz <jarek.rencz@functionite.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=6"
+  },
+  "dependencies": {
+    "colors": "^1.1.2",
+    "fs-utils": "^0.7.0",
+    "json5": "^0.5.1",
+    "npm": "^4.0.5",
+    "yargs": "^6.5.0"
+  }
+}
