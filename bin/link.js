@@ -1,9 +1,5 @@
 #!/usr/bin/env node
 
-require('json5/lib/require');
-
-const npm = require('npm');
-const path = require('path');
 const fs = require('fs');
 const {isLink} = require('fs-utils');
 const {
@@ -13,16 +9,15 @@ const {
   green,
 } = require('colors');
 
-const commonYargsConfig = require('../lib/commonYargsConfig');
-const {argv} = commonYargsConfig(require("yargs"));
+const {name} = require('./package.json');
+const config = require('rc')(name);
 
+const path = require('path');
 const pkg = require(path.resolve('./package.json'));
-const prefix = cyan('[localdev:link]');
-const log = (...msgs) => {
-  console.log(prefix, ...msgs);
-};
+const log = require('../lib/log');
 const isDependency = require('../lib/isDependencyOf')(pkg);
-const config = require(path.resolve(argv.config));
+
+const npm = require('npm');
 
 npm.load(pkg, (err) => {
   if (err) {
@@ -37,6 +32,8 @@ npm.load(pkg, (err) => {
 
       if (!isDependency(locallyDevelopedDependencyName)) {
         log(`${ infix } is NOT A DEPENDENCY. Ignoring.`);
+
+        return;
       }
 
       // Note: only direct dependencies can be linked.
@@ -47,6 +44,7 @@ npm.load(pkg, (err) => {
       if (fs.existsSync(wcAbsPath)) {
         if (isLink(pkgAbsPath)) {
           log(`${ infix } IS ALREADY LINKED. Leaving as is.`);
+
           return;
         }
 

@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-require('json5/lib/require');
-
-const path = require('path');
 const fs = require('fs');
 const {isLink} = require('fs-utils');
 const {
@@ -10,18 +7,16 @@ const {
   cyan,
   red,
 } = require('colors');
-const {spawn} = require('child_process');
 
-const commonYargsConfig = require('../lib/commonYargsConfig');
-const {argv} = commonYargsConfig(require("yargs"));
+const {name} = require('./package.json');
+const config = require('rc')(name);
 
+const path = require('path');
 const pkg = require(path.resolve('./package.json'));
-const prefix = cyan('[localdev:start]');
-const log = (...msgs) => {
-  console.log(`${ prefix }`, ...msgs);
-};
+const log = require('../lib/log');
 const isDependency = require('../lib/isDependencyOf')(pkg);
-const config = require(path.resolve(argv.config));
+
+const {spawn} = require('child_process');
 
 Object
   .keys(config)
@@ -39,7 +34,7 @@ Object
     const wcRelPath = config[locallyDevelopedDependencyName];
     const wcAbsPath = path.resolve(wcRelPath);
 
-    const scriptName = 'localdev-start';
+    const scriptName = `${ name }-start`;
 
     if (fs.existsSync(wcAbsPath)) {
       if (isLink(pkgAbsPath)) {
@@ -58,11 +53,11 @@ Object
           });
 
           localDevProcess.on('error', data => {
-            log(`${ infix } localdev ${ red('PROBLEM') }`, data.toString());
+            log(`${ infix } ${ name } ${ red('PROBLEM') }`, data.toString());
           });
 
           localDevProcess.on('close', code => {
-            log(`${ infix } localdev ${ red('EXITED') } with code`, code);
+            log(`${ infix } ${ name } ${ red('EXITED') } with code`, code);
           });
 
           process.on('exit', () => {
