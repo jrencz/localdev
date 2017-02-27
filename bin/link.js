@@ -7,7 +7,7 @@ const path = require('path');
 const hostPkg = require(path.resolve('./package.json'));
 const npm = require('npm');
 
-const executeForPackages = require('../lib/executeForPackages');
+const forEachOfDependencies = require('../lib/forEachOfDependencies');
 const linkPackage = require('../lib/linkPackage');
 
 npm.load(hostPkg, (err) => {
@@ -16,6 +16,6 @@ npm.load(hostPkg, (err) => {
     process.exit(1);
   }
 
-  executeForPackages(linkPackage(npm), config);
+  forEachOfDependencies(linkPackage(npm), config);
 });
 
