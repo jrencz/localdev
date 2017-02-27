@@ -55,28 +55,42 @@ This is not a huge inconvenience for most of the projects ()
         // `<package name>` key
         //
         // Holds configuration related to the package that should be linked.
-        "my-awesome-package": <string|null|false>,
+        "package-name": <string|null|false|Object>,
       
         // `<package name>` key: String, relative path
         //
         // path relative to the place where .localdevrc is placed
-        "my-awesome-package": "../my-package-dir",
+        "package-name": "../my-package-dir",
+        
+        // `<package name>` key: String, absolute path
+        "package-name": "/Volumes/packages/my-package-dir",
       
         // `<package name>` key: null
         //
-        // This will unlink the package (i.e. will reinstall it normally)
-        // next time `localdev-link` is run.
+        // This will unlink the package (i.e. will reinstall it normally if it's
+        // linked) next time `localdev-link` is run.
         // Package will remain installed (i.e. it will not be linked) each
         // time `localdev-link` is run.
-        //
-        // TODO: remove this, just unlink if it's no longer expressed in localdevrc.
-        "my-awesome-package": null,
+        // It's a way to remporarily re-install a package OR to override
+        // general configuration from within a scope.
+        "package-name": null,
         
         // `<package name>` key: false
         //
-        // This will prevent hook from being run without unlinking.
-        // TODO: remove this, move this value to `hooks`
-        "my-awesome-package": false
+        // This will omit the dependency when linking leaving it as it no matter
+        // if it should be installed or linked.
+        "package-name": false,
+        
+        // `<package-name>` key: object
+        //
+        // This is the most verbose dependency configuration form
+        //
+        // `strategy` may be omitted in certain cases:
+        // - if `path` is present strategy will be `link`
+        "package-name": {
+            "strategy": "link",
+            "path": "/Volumes/packages/my-package-dir"
+        }
     }
    
     // `hooks` key
@@ -114,21 +128,32 @@ This is not a huge inconvenience for most of the projects ()
         
         // `<package name>` key: object
         //
-        // This is the most verbose configuration output
+        // This is the most verbose hook configuration form
         // It allows defining verbosity for each hook.
         //
+        // `strategy` may be omitted in certain cases:
+        // - if `spawnArgs` is present strategy will be `spawn`
         "package-name": {
-          "spawn": ["npm", ["run", "start"], {}],
-          "verbose": "false"
+          "strategy": "spawn",
+          "spawnArgs": ["npm", ["run", "start"], {}],
+          "isVerbose": "false"
         }
     }
     
     // `environments` key
     //
-    // Allows scoping configuration by arbitrary name or path (relative or
-    // absolute).
-    // All the configuration described apart from this key may be expressed
-    // under any key inside `scopes`.
+    // Allows scoping configuration by arbitrary name or by path (absolute or
+    // relative - conditions apply for relative paths).
+    //
+    // All the configuration keys described on the configuration root level
+    // apart from this key may be expressed under any valid key inside `scopes`.
+    //
+    // To allow arbitrary names more strict rules apply to what "relative path"
+    // is. It's a string starting with either `./` or `../` or a string having
+    // `/` in it (but not as a first character). This effectively disallows
+    // expressing relative paths being direct descendant child (without path
+    // separator) which is valid in terms of node standard library. Such paths
+    // are required to start with `./` to be interpreted as relative paths.
     "scopes": Object.<string, object>
 }
 ```
@@ -165,8 +190,6 @@ instructions is as follows
 - dependency expressed in root-level `dependencies`
 
 ## Use cases
-
-TODO: describe "I develop a new feature of my dependency which I will then make a PR for"
 
 ### "Developing a package along with projects"
 
