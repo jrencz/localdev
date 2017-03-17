@@ -1,3 +1,10 @@
+# 0.1.1
+
+## Bug fixes
+- [3a9e2d](https://github.com/jrencz/localdev/commit/3a9e2ddbf414a2434512a041efd98db92613b228)
+  Fix for a critical bug, where not having `scopes` key in the config made
+  `link` script fail, reported by [QcRafal](https://github.com/QcRafal)
+
 # 0.1.0
 
 Initial release
