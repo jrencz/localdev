@@ -9,7 +9,7 @@
     "localdev-link": "./bin/link.js",
     "localdev-start": "./bin/start.js"
   },
-  "author": "Jarek Rencz <jarek.rencz@functionite.com>",
+  "author": "Jarosław Rencz <jaroslaw@rencz.pl>",
   "license": "MIT",
   "engines": {
     "node": ">=6"
